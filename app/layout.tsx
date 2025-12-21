@@ -12,6 +12,30 @@ const lato = Lato({
 export const metadata: Metadata = {
   title: "Prioritize",
   description: "Master your tasks with clarity and focus",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "Prioritize",
+    description: "Master your tasks with clarity and focus",
+    url: "https://prioritize.urcodingbuddy.space",
+    siteName: "Prioritize",
+    images: [
+      {
+        url: "/logo-white.png", // Replace with your custom image path
+        width: 1200,
+        height: 630,
+        alt: "Prioritize - Master your tasks",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Prioritize",
+    description: "Master your tasks with clarity and focus",
+    images: ["/frontpage-ref.png"],
+  },
 };
 
 export default function RootLayout({

@@ -47,7 +47,7 @@ export default function LandingPage() {
       >
         <div className="container mx-auto px-6 h-10 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <Logo w={60} h={60} />
+            <Logo w={45} h={45} />
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />

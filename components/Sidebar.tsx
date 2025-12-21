@@ -126,11 +126,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div className="h-16 flex items-center px-3 border-b border-sidebar-border">
         <div
           className={cn(
-            "flex items-center overflow-hidden transition-all",
+            "flex items-center overflow-hidden px-2 transition-all",
             collapsed ? "w-0 opacity-0" : "w-full opacity-100"
           )}
         >
-          <Logo w={50} h={50} />
+          <Logo w={30} h={30} />
           <span className="font-black tracking-tight text-foreground truncate">
             rioritize
           </span>
@@ -142,7 +142,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           onClick={onToggle}
         >
           {collapsed ? (
-            <Logo w={60} h={60} />
+            <Logo w={30} h={30} />
           ) : (
             <ChevronLeft className="h-4 w-4" />
           )}
