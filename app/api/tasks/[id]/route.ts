@@ -33,7 +33,7 @@ export async function GET(
         }
 
         // Permission check
-        const isAssigned = task.assignedUsers.some((ut) => ut.userId === user.userId)
+        const isAssigned = task.assignedUsers.some((ut:any) => ut.userId === user.userId)
         const isCreator = task.creatorId === user.userId
         const isAdmin = user.teamRole === 'ADMIN'
         const isOfficer = user.teamRole === 'OFFICER'
