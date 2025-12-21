@@ -68,7 +68,7 @@ export async function PATCH(
         const isAdmin = user.teamRole === 'ADMIN'
         const isOfficer = user.teamRole === 'OFFICER'
         const isCreator = existingTask.creatorId === user.userId
-        const isAssigned = existingTask.assignedUsers.some(ut => ut.userId === user.userId)
+        const isAssigned = existingTask.assignedUsers.some((ut: any) => ut.userId === user.userId)
 
         if (!isAdmin && !isOfficer && !isCreator && !isAssigned) {
             return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 })
