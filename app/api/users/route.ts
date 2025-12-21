@@ -22,7 +22,7 @@ export async function GET() {
             })
             return NextResponse.json({
                 success: true,
-                data: projectMembers.map(m => ({
+                data: projectMembers.map((m: any) => ({
                     id: m.userId,
                     email: m.user.email,
                     name: m.user.name,

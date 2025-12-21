@@ -29,7 +29,7 @@ export async function POST(
         }
 
         const assignments = await Promise.all(
-            userIds.map((userId) =>
+            userIds.map((userId: string) =>
                 prisma.userTask.upsert({
                     where: {
                         userId_taskId: {

@@ -104,7 +104,7 @@ export async function PATCH(
             await prisma.userTask.deleteMany({ where: { taskId: id } })
             if (updates.assignedUserIds.length > 0) {
                 data.assignedUsers = {
-                    create: updates.assignedUserIds.map((userId) => ({ userId })),
+                    create: updates.assignedUserIds.map((userId: string) => ({ userId })),
                 }
             }
         }

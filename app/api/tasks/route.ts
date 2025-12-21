@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
                 creatorId: user.userId,
                 companyId,
                 assignedUsers: assignedUserIds && assignedUserIds.length > 0 ? {
-                    create: assignedUserIds.map((id) => ({
+                    create: assignedUserIds.map((id: string) => ({
                         userId: id,
                     })),
                 } : undefined,
