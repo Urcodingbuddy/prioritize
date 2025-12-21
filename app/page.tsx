@@ -13,7 +13,7 @@ import {
   LayoutDashboard,
   Star,
 } from "lucide-react";
-import { Logo } from "@/components/Logo";
+import  Logo  from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -47,24 +47,8 @@ export default function LandingPage() {
       >
         <div className="container mx-auto px-6 h-10 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <Logo showText />
+            <Logo w={60} h={60} />
           </div>
-
-          <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-            <a
-              href="#features"
-              className="hover:text-foreground transition-colors"
-            >
-              Features
-            </a>
-            <a
-              href="#security"
-              className="hover:text-foreground transition-colors"
-            >
-              Security
-            </a>
-          </div>
-
           <div className="flex items-center gap-4">
             <ThemeToggle />
             <Link
@@ -328,7 +312,7 @@ export default function LandingPage() {
         {/* Footer */}
         <footer className="mt-40 pt-10 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60">
           <div className="flex items-center gap-2 text-foreground">
-            <Logo iconClassName="h-6 w-6" />
+            <Logo w={60} h={60} />
             <span className="text-sm font-black tracking-tighter">
               Prioritize &copy; 2024
             </span>

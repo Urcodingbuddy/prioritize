@@ -10,11 +10,15 @@ import {
   CheckCircle2,
   Building2,
   User,
-  Sparkles,
   ArrowRight,
+  Sparkles,
+  Globe,
+  Circle,
+  Orbit,
+  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Logo } from "./Logo";
+import Logo from "./Logo";
 
 interface AuthFormProps {
   mode: "login" | "register";
@@ -67,10 +71,10 @@ export function AuthForm({ mode }: AuthFormProps) {
         <div className="w-full max-w-md space-y-10 reveal-up">
           <div className="space-y-4">
             <div
-              className="flex items-center gap-3 mb-10 group cursor-pointer"
+              className="flex items-center justify-center gap-3 mb-10 group cursor-pointer"
               onClick={() => router.push("/")}
             >
-              <Logo showText />
+              <Logo w={100} h={100} />
             </div>
 
             <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">
@@ -238,25 +242,59 @@ export function AuthForm({ mode }: AuthFormProps) {
       </div>
 
       {/* Right Column - Premium Visualization */}
+
       <div className="hidden lg:flex flex-col items-center justify-center p-20 relative overflow-hidden border-l border-border bg-muted/30">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-50" />
 
-        {/* Animated Orbiting Element */}
         <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute w-[500px] h-[500px] border border-border/50 rounded-full animate-[spin_20s_linear_infinite]" />
-          <div className="absolute w-[350px] h-[350px] border border-border rounded-full animate-[spin_15s_linear_infinite_reverse]" />
-          <div className="absolute w-[200px] h-[200px] border border-primary/20 rounded-full animate-[spin_10s_linear_infinite]" />
+          {/* OUTER ORBIT */}
+          <div className="absolute w-[520px] h-[520px] rounded-full 
+  border border-white/10 
+  shadow-[0_0_40px_rgba(255,255,255,0.04)]
+  animate-[spin_30s_linear_infinite]"
+          >
+            <div className="absolute top-1/2 -translate-y-1/2 -right-3">
+              <Globe className="text-primary/70" size={22} />
+            </div>
+          </div>
 
-          <div className="relative z-10 space-y-12 text-center max-w-sm">
-            <div className="h-24 w-24 bg-white/5 rounded-[2.5rem] border border-white/10 flex items-center justify-center mx-auto shadow-2xl mb-12 group hover:rotate-6 transition-transform duration-500">
-              <Sparkles className="h-10 w-10 text-primary" />
+          {/* MID ORBIT */}
+          <div className="absolute w-[380px] h-[380px] rounded-full 
+  border border-white/12 
+  shadow-[0_0_30px_rgba(255,255,255,0.05)]
+  animate-[spin_22s_linear_infinite_reverse]">
+            <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+              <Circle className="text-muted-foreground/70" size={20} />
+            </div>
+
+            <div className="absolute bottom-6 right-6">
+              <Star className="text-primary/50" size={24} />
+            </div>
+          </div>
+
+          {/* INNER ORBIT */}
+          <div className="absolute w-[240px] h-[240px] rounded-full 
+  border border-white/15 
+  shadow-[0_0_20px_rgba(255,255,255,0.06)]
+  animate-[spin_16s_linear_infinite]">
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+              <Orbit className="text-muted-foreground/60" size={22} />
+            </div>
+          </div>
+
+          {/* CENTER CORE */}
+          <div className="relative z-10 flex flex-col items-center text-center space-y-12 max-w-sm">
+            <div className="h-24 w-24 rounded-[2.5rem] border border-white/10 bg-white/5 flex items-center justify-center shadow-2xl">
+              <Sparkles className="text-primary" width={48} height={48} />
             </div>
 
             <div className="space-y-6">
               <h2 className="text-3xl font-black tracking-tighter leading-tight">
-                "The ultimate <br /> vantage point for <br /> your
-                productivity."
+                The ultimate <br />
+                vantage point for <br />
+                your productivity.
               </h2>
+
               <div className="flex flex-col items-center gap-4">
                 <div className="h-px w-10 bg-primary" />
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
@@ -269,14 +307,14 @@ export function AuthForm({ mode }: AuthFormProps) {
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
-                  className="h-1.5 w-1.5 rounded-full bg-primary/20"
+                  className="h-1.5 w-1.5 rounded-full bg-primary/30"
                 />
               ))}
             </div>
           </div>
         </div>
 
-        {/* Dynamic Overlay labels */}
+        {/* HUD */}
         <div className="absolute top-10 right-10 flex flex-col items-end gap-2 opacity-20">
           <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[8px] font-black uppercase tracking-widest">
             Latency: 12ms

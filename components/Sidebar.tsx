@@ -22,7 +22,7 @@ import {
   MoreVertical,
   User as UserIcon,
 } from "lucide-react";
-import { Logo } from "./Logo";
+import Logo from "./Logo";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
 import { api } from "@/lib/api";
@@ -126,23 +126,23 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div className="h-16 flex items-center px-3 border-b border-sidebar-border">
         <div
           className={cn(
-            "flex items-center gap-2 overflow-hidden transition-all",
+            "flex items-center overflow-hidden transition-all",
             collapsed ? "w-0 opacity-0" : "w-full opacity-100"
           )}
         >
-          <Logo iconClassName="h-8 w-8" />
+          <Logo w={50} h={50} />
           <span className="font-black tracking-tight text-foreground truncate">
-            Dashboard
+            rioritize
           </span>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className={cn("ml-auto h-8 w-8", collapsed && "ml-0")}
+          className={cn("ml-auto w-10", collapsed && "ml-0")}
           onClick={onToggle}
         >
           {collapsed ? (
-            <Menu className="h-4 w-4" />
+            <Logo w={60} h={60} />
           ) : (
             <ChevronLeft className="h-4 w-4" />
           )}

@@ -132,6 +132,7 @@ export function DashboardHeader({ onNewTask }: { onNewTask?: () => void }) {
 
         {/* Actions */}
         <div className="flex items-center gap-4 relative">
+          <ThemeToggle />
           <div className="relative">
             <Button
               variant="ghost"
@@ -219,10 +220,9 @@ export function DashboardHeader({ onNewTask }: { onNewTask?: () => void }) {
               </>
             )}
           </div>
-
           <Button
             onClick={onNewTask}
-            className="hidden md:flex h-10 px-6 font-black uppercase text-[10px] tracking-[0.2em] rounded-xl shadow-xl shadow-primary/20 bg-primary hover:scale-[1.02] active:scale-95 transition-all"
+            className="hidden md:flex h-10 px-6 font-black uppercase text-[10px] tracking-[0.2em] rounded-xl shadow-xl bg-primary hover:scale-[1.02] active:scale-95 transition-all"
           >
             <Plus className="h-4 w-4 mr-2" />
             New Mission

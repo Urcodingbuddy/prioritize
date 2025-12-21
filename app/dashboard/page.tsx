@@ -79,7 +79,7 @@ export default function DashboardPage() {
         <Button
           onClick={() => router.push("/teams")}
           variant="outline"
-          className="h-10 px-6 font-bold rounded-xl border-2 border-primary/10 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all text-sm group/btn relative overflow-hidden shadow-xl shadow-primary/5"
+          className="h-10 px-6 font-bold rounded-xl border-2 border-primary/10 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all text-sm group/btn relative overflow-hidden"
         >
           <span className="relative z-10 flex items-center">
             Switch to Team Hub
