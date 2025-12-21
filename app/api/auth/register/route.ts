@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         const hashedPassword = await hashPassword(password)
 
         // Use a transaction to ensure both user and company/membership are created
-        const result = await prisma.$transaction(async (tx) => {
+        const result = await prisma.$transaction(async (tx:any) => {
             const user = await tx.user.create({
                 data: {
                     email,
