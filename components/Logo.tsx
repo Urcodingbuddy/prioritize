@@ -17,7 +17,7 @@ export default function Logo({ w, h, ...props }: LogoProps) {
     setMounted(true);
   }, []);
 
-  const logoSrc = mounted && theme !== 'dark' ? '/logo-black.svg' : '/logo-white.svg';
+  const logoSrc = mounted && theme === 'light' ? '/logo-black.svg' : '/logo-white.svg';
 
   return (
     <Image 
