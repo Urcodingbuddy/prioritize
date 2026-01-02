@@ -198,7 +198,6 @@ export function AuthForm({ mode }: AuthFormProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
                   className="h-14 bg-muted/50 border-border focus:border-primary/50 transition-all rounded-2xl text-sm font-medium"
                 />
               </div>
