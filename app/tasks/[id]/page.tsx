@@ -100,7 +100,7 @@ export default function TaskDetailPage({
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Button
           variant="ghost"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/home")}
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />

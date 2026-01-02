@@ -29,7 +29,7 @@ export function BottomNav() {
   const links = [
     {
       id: "home",
-      href: "/dashboard",
+      href: "/home",
       label: "Home",
       icon: LayoutDashboard,
     },
@@ -41,9 +41,7 @@ export function BottomNav() {
     },
     {
       id: "tasks",
-      href: currentCompanyId
-        ? `/teams/${currentCompanyId}/tasks`
-        : "/dashboard",
+      href: currentCompanyId ? `/teams/${currentCompanyId}/tasks` : "/home",
       label: "Tasks",
       icon: CheckCircle2,
     },

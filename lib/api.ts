@@ -99,6 +99,10 @@ export const api = {
             })
             return handleResponse(response)
         },
+        members: async () => {
+            const response = await fetchWithCredentials(`${API_BASE}/teams/members`)
+            return handleResponse(response)
+        },
         listMembers: async () => {
             const response = await fetchWithCredentials(`${API_BASE}/teams/members`)
             return handleResponse(response)
@@ -117,6 +121,14 @@ export const api = {
             })
             return handleResponse(response)
         },
+        transferOwnership: async (newOwnerId: string) => {
+            const response = await fetchWithCredentials(`${API_BASE}/teams/transfer-ownership`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newOwnerId }),
+            })
+            return handleResponse(response)
+        },
     },
 
     tasks: {
@@ -129,6 +141,7 @@ export const api = {
             assignedToMe?: boolean
             publicOnly?: boolean
             personalOnly?: boolean
+            companyId?: string
         }) => {
             const queryParams = new URLSearchParams()
             if (params?.page) queryParams.set('page', params.page.toString())
@@ -139,6 +152,7 @@ export const api = {
             if (params?.assignedToMe) queryParams.set('assignedToMe', 'true')
             if (params?.publicOnly) queryParams.set('publicOnly', 'true')
             if (params?.personalOnly) queryParams.set('personalOnly', 'true')
+            if (params?.companyId) queryParams.set('companyId', params.companyId)
 
             const response = await fetchWithCredentials(`${API_BASE}/tasks?${queryParams}`)
             return handleResponse(response)
@@ -156,6 +170,7 @@ export const api = {
             priority?: string
             isPublic?: boolean
             assignedUserIds?: string[]
+            companyId?: string
         }) => {
             const response = await fetchWithCredentials(`${API_BASE}/tasks`, {
                 method: 'POST',
@@ -167,8 +182,8 @@ export const api = {
 
         update: async (id: string, data: {
             title?: string
-            description?: string
-            dueDate?: string
+            description?: string | null
+            dueDate?: string | null
             status?: string
             priority?: string
             isPublic?: boolean

@@ -23,6 +23,7 @@ interface TaskFormProps {
   onClose: () => void;
   onSuccess: () => void;
   defaultPriority?: Priority;
+  personalMode?: boolean; // Hide team-specific fields for personal tasks
 }
 
 export function TaskForm({
@@ -31,6 +32,7 @@ export function TaskForm({
   onClose,
   onSuccess,
   defaultPriority = "MEDIUM",
+  personalMode = false,
 }: TaskFormProps) {
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
@@ -135,35 +137,37 @@ export function TaskForm({
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="space-y-4">
-            {/* Visibility Toggle */}
-            <div className="flex items-center gap-2 p-1 bg-secondary/30 rounded-lg w-fit">
-              <button
-                type="button"
-                onClick={() => setIsPublic(false)}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all",
-                  !isPublic
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Lock className="h-3 w-3" />
-                Private
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsPublic(true)}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all",
-                  isPublic
-                    ? "bg-background text-primary shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Globe2 className="h-3 w-3" />
-                Public
-              </button>
-            </div>
+            {/* Visibility Toggle - Hidden in personal mode */}
+            {!personalMode && (
+              <div className="flex items-center gap-2 p-1 bg-secondary/30 rounded-lg w-fit">
+                <button
+                  type="button"
+                  onClick={() => setIsPublic(false)}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all",
+                    !isPublic
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <Lock className="h-3 w-3" />
+                  Private
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsPublic(true)}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all",
+                    isPublic
+                      ? "bg-background text-primary shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <Globe2 className="h-3 w-3" />
+                  Public
+                </button>
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label
@@ -236,59 +240,62 @@ export function TaskForm({
               </div>
             </div>
 
-            <div className="space-y-3">
-              <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Assign To
-              </Label>
-              <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-1">
-                {users.length === 0 ? (
-                  <div className="py-8 text-center border border-dashed rounded-xl bg-secondary/10">
-                    <p className="text-xs text-muted-foreground italic">
-                      Fetching team members...
-                    </p>
-                  </div>
-                ) : (
-                  users.map((user) => (
-                    <div
-                      key={user.id}
-                      onClick={() => toggleUser(user.id)}
-                      className={cn(
-                        "flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer group",
-                        assignedUserIds.includes(user.id)
-                          ? "bg-primary/5 border-primary/20"
-                          : "bg-secondary/20 border-transparent hover:bg-secondary/40"
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center text-[10px] font-bold text-primary border border-primary/10">
-                          {user.name[0].toUpperCase()}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium leading-none">
-                            {user.name}
-                          </span>
-                          <span className="text-[10px] text-muted-foreground mt-0.5">
-                            {user.email}
-                          </span>
-                        </div>
-                      </div>
+            {/* Assign To - Hidden in personal mode */}
+            {!personalMode && (
+              <div className="space-y-3">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Assign To
+                </Label>
+                <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-1">
+                  {users.length === 0 ? (
+                    <div className="py-8 text-center border border-dashed rounded-xl bg-secondary/10">
+                      <p className="text-xs text-muted-foreground italic">
+                        Fetching team members...
+                      </p>
+                    </div>
+                  ) : (
+                    users.map((user) => (
                       <div
+                        key={user.id}
+                        onClick={() => toggleUser(user.id)}
                         className={cn(
-                          "h-4 w-4 rounded-full border flex items-center justify-center transition-all",
+                          "flex items-center justify-between p-2.5 rounded-xl border transition-all cursor-pointer group",
                           assignedUserIds.includes(user.id)
-                            ? "bg-primary border-primary"
-                            : "border-border"
+                            ? "bg-primary/5 border-primary/20"
+                            : "bg-secondary/20 border-transparent hover:bg-secondary/40"
                         )}
                       >
-                        {assignedUserIds.includes(user.id) && (
-                          <div className="h-1.5 w-1.5 rounded-full bg-white transition-all scale-100" />
-                        )}
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center text-[10px] font-bold text-primary border border-primary/10">
+                            {user.name[0].toUpperCase()}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium leading-none">
+                              {user.name}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground mt-0.5">
+                              {user.email}
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          className={cn(
+                            "h-4 w-4 rounded-full border flex items-center justify-center transition-all",
+                            assignedUserIds.includes(user.id)
+                              ? "bg-primary border-primary"
+                              : "border-border"
+                          )}
+                        >
+                          {assignedUserIds.includes(user.id) && (
+                            <div className="h-1.5 w-1.5 rounded-full bg-white transition-all scale-100" />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {error && (

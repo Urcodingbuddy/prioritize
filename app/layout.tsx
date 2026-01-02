@@ -3,6 +3,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/lib/AuthContext";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "Prioritize",
     images: [
       {
-        url: "/logo-white.png", // Replace with your custom image path
+        url: "/logo-white.png",
         width: 1200,
         height: 630,
         alt: "Prioritize - Master your tasks",
@@ -48,11 +49,11 @@ export default function RootLayout({
       <body className={lato.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>

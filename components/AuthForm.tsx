@@ -1,7 +1,7 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,7 @@ interface AuthFormProps {
 
 export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
+  const { refetchUser, refetchStats } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -50,7 +51,12 @@ export function AuthForm({ mode }: AuthFormProps) {
       } else {
         await api.auth.login(email, password);
       }
-      router.push("/dashboard");
+
+      // Update global auth state immediately
+      await refetchUser();
+      await refetchStats();
+
+      router.push("/home");
       router.refresh();
     } catch (err: any) {
       setError(err.message || "An error occurred");
@@ -248,7 +254,8 @@ export function AuthForm({ mode }: AuthFormProps) {
 
         <div className="relative w-full h-full flex items-center justify-center">
           {/* OUTER ORBIT */}
-          <div className="absolute w-[520px] h-[520px] rounded-full 
+          <div
+            className="absolute w-[520px] h-[520px] rounded-full 
   border border-white/10 
   shadow-[0_0_40px_rgba(255,255,255,0.04)]
   animate-[spin_30s_linear_infinite]"
@@ -259,10 +266,12 @@ export function AuthForm({ mode }: AuthFormProps) {
           </div>
 
           {/* MID ORBIT */}
-          <div className="absolute w-[380px] h-[380px] rounded-full 
+          <div
+            className="absolute w-[380px] h-[380px] rounded-full 
   border border-white/12 
   shadow-[0_0_30px_rgba(255,255,255,0.05)]
-  animate-[spin_22s_linear_infinite_reverse]">
+  animate-[spin_22s_linear_infinite_reverse]"
+          >
             <div className="absolute -top-2 left-1/2 -translate-x-1/2">
               <Circle className="text-muted-foreground/70" size={20} />
             </div>
@@ -273,10 +282,12 @@ export function AuthForm({ mode }: AuthFormProps) {
           </div>
 
           {/* INNER ORBIT */}
-          <div className="absolute w-[240px] h-[240px] rounded-full 
+          <div
+            className="absolute w-[240px] h-[240px] rounded-full 
   border border-white/15 
   shadow-[0_0_20px_rgba(255,255,255,0.06)]
-  animate-[spin_16s_linear_infinite]">
+  animate-[spin_16s_linear_infinite]"
+          >
             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
               <Orbit className="text-muted-foreground/60" size={22} />
             </div>

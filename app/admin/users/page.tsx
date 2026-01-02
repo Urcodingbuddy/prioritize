@@ -60,7 +60,7 @@ export default function AdminUsersPage() {
           setMembers(membersRes.data);
         }
       } catch (err: any) {
-        if (err.status === 403) router.push("/dashboard");
+        if (err.status === 403) router.push("/home");
       } finally {
         setLoading(false);
       }

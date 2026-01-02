@@ -1,10 +1,11 @@
 "use client";
 
-import Image, { ImageProps } from 'next/image';
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import Image, { ImageProps } from "next/image";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
-interface LogoProps extends Omit<ImageProps, 'width' | 'height' | 'src' | 'alt'> {
+interface LogoProps
+  extends Omit<ImageProps, "width" | "height" | "src" | "alt"> {
   w: number;
   h: number;
 }
@@ -17,15 +18,8 @@ export default function Logo({ w, h, ...props }: LogoProps) {
     setMounted(true);
   }, []);
 
-  const logoSrc = mounted && theme === 'light' ? '/logo-black.svg' : '/logo-white.svg';
+  const logoSrc = mounted && theme === 'dark' ? '/logo-white.svg' : '/logo-black.svg';
+  // const logoSrc = "/logo-white.svg";
 
-  return (
-    <Image 
-      {...props}
-      src={logoSrc} 
-      alt="P"
-      width={w} 
-      height={h} 
-    />
-  );
+  return <Image {...props} src={logoSrc} alt="P" width={w} height={h} />;
 }

@@ -68,6 +68,14 @@ export async function PATCH(request: NextRequest) {
             )
         }
 
+        // Prevent promoting to ADMIN - use transfer-ownership instead
+        if (role === 'ADMIN') {
+            return NextResponse.json(
+                { success: false, error: 'Cannot promote to Admin directly. Use Transfer Ownership instead.' },
+                { status: 400 }
+            )
+        }
+
         await prisma.teamMembership.update({
             where: {
                 userId_companyId: {

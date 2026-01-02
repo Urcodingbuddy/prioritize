@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Edit, Trash2, Globe2, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useSoundEffects } from "@/hooks/use-sound-effects";
 
 interface TaskCardProps {
   task: Task;
@@ -45,9 +46,16 @@ export function TaskCard({
     IN_PROGRESS: "COMPLETED",
     COMPLETED: "PENDING",
   };
+  const { playClick, playSuccess } = useSoundEffects();
 
   return (
-    <Card className="group relative border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-primary/20 transition-all duration-300 bg-card/60 dark:bg-card/40 backdrop-blur-sm hover:bg-card rounded-2xl overflow-hidden cursor-pointer animate-in fade-in slide-in-from-bottom-1">
+    <Card
+      onClick={() => {
+        playClick();
+        onEdit(task);
+      }}
+      className="group relative border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-primary/20 transition-all duration-300 bg-card/60 dark:bg-card/40 backdrop-blur-sm hover:bg-card rounded-2xl overflow-hidden cursor-pointer animate-in fade-in slide-in-from-bottom-1"
+    >
       <CardContent className="p-4 space-y-4">
         {/* Header: Status & Actions */}
         <div className="flex items-center justify-between">
@@ -73,6 +81,7 @@ export function TaskCard({
               className="h-6 w-6 text-muted-foreground/40 hover:text-foreground hover:bg-secondary rounded-lg"
               onClick={(e) => {
                 e.stopPropagation();
+                playClick();
                 onEdit(task);
               }}
             >
@@ -84,6 +93,7 @@ export function TaskCard({
               className="h-6 w-6 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 rounded-lg"
               onClick={(e) => {
                 e.stopPropagation();
+                playClick();
                 onDelete(task.id);
               }}
             >
@@ -145,7 +155,13 @@ export function TaskCard({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onStatusChange(task.id, nextStatus[task.status]);
+              const next = nextStatus[task.status];
+              if (next === "COMPLETED") {
+                playSuccess();
+              } else {
+                playClick();
+              }
+              onStatusChange(task.id, next);
             }}
             className="flex items-center gap-1 px-1.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors group/btn"
           >

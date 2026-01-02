@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSoundEffects } from "@/hooks/use-sound-effects";
 import { Task, Priority } from "@/lib/types";
 import { TaskCard } from "@/components/TaskCard";
 import { api } from "@/lib/api";
@@ -16,6 +17,8 @@ interface PriorityBoardProps {
   assignedToMe?: boolean;
   publicOnly?: boolean;
   personalOnly?: boolean;
+  canCreate?: boolean;
+  companyId?: string;
 }
 
 const priorities: Priority[] = ["URGENT", "HIGH", "MEDIUM", "LOW"];
@@ -35,7 +38,10 @@ export function PriorityBoard({
   assignedToMe = false,
   publicOnly = false,
   personalOnly = false,
+  canCreate = true,
+  companyId,
 }: PriorityBoardProps) {
+  const { playClick } = useSoundEffects();
   const [tasksByPriority, setTasksByPriority] = useState<
     Record<Priority, Task[]>
   >({
@@ -54,6 +60,7 @@ export function PriorityBoard({
         assignedToMe,
         publicOnly,
         personalOnly,
+        companyId,
       });
       const grouped = response.data.reduce(
         (acc: Record<Priority, Task[]>, task: Task) => {
@@ -122,12 +129,15 @@ export function PriorityBoard({
                   {tasksByPriority[priority].length}
                 </div>
               </div>
-              {!publicOnly && (
+              {!publicOnly && canCreate && (
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-muted-foreground/40 hover:text-primary hover:bg-primary/5 transition-all rounded-xl"
-                  onClick={() => onCreateTask?.(priority)}
+                  onClick={() => {
+                    playClick();
+                    onCreateTask?.(priority);
+                  }}
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
@@ -136,17 +146,28 @@ export function PriorityBoard({
 
             <div className="flex-1 flex flex-col gap-3 min-h-[200px]">
               {!hasTasks ? (
-                <button
-                  onClick={() => onCreateTask?.(priority)}
-                  className="flex-1 flex flex-col items-center justify-center border border-dashed border-border/30 rounded-2xl p-8 text-center group/empty transition-all hover:bg-white/5 hover:border-primary/20 cursor-pointer"
-                >
-                  <div className="h-10 w-10 rounded-2xl bg-secondary/40 flex items-center justify-center mb-3 group-hover/empty:scale-110 group-hover/empty:rotate-6 transition-all duration-300">
-                    <Plus className="h-5 w-5 text-muted-foreground/40" />
+                canCreate ? (
+                  <button
+                    onClick={() => {
+                      playClick();
+                      onCreateTask?.(priority);
+                    }}
+                    className="flex-1 flex flex-col items-center justify-center border border-dashed border-border/30 rounded-2xl p-8 text-center group/empty transition-all hover:bg-white/5 hover:border-primary/20 cursor-pointer"
+                  >
+                    <div className="h-10 w-10 rounded-2xl bg-secondary/40 flex items-center justify-center mb-3 group-hover/empty:scale-110 group-hover/empty:rotate-6 transition-all duration-300">
+                      <Plus className="h-5 w-5 text-muted-foreground/40" />
+                    </div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30">
+                      Capture Task
+                    </p>
+                  </button>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center border border-dashed border-border/30 rounded-2xl p-8 text-center">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30">
+                      No Tasks
+                    </p>
                   </div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/30">
-                    Capture Task
-                  </p>
-                </button>
+                )
               ) : (
                 tasksByPriority[priority].map((task) => (
                   <TaskCard
