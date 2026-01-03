@@ -5,6 +5,14 @@ import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { api } from "@/lib/api";
 import {
   CheckCircle2,
@@ -74,159 +82,162 @@ export function AuthForm({ mode }: AuthFormProps) {
 
       {/* Left Column - Form */}
       <div className="flex items-center justify-center p-8 lg:p-24 relative z-10">
-        <div className="w-full max-w-md space-y-10 reveal-up">
-          <div className="space-y-4">
+        <Card className="w-full max-w-md reveal-up border-2 border-foreground bg-card shadow-2xl">
+          <CardHeader className="space-y-4">
             <div
-              className="flex items-center justify-center gap-3 mb-10 group cursor-pointer"
+              className="flex items-center justify-center gap-3 mb-6 group cursor-pointer"
               onClick={() => router.push("/")}
             >
               <Logo w={100} h={100} />
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">
+            <CardTitle className="text-4xl md:text-5xl font-black tracking-tighter text-foreground text-center">
               {mode === "login" ? "Welcome Back." : "Join the Elite."}
-            </h1>
-            <p className="text-muted-foreground font-medium leading-relaxed">
+            </CardTitle>
+            <CardDescription className="text-muted-foreground font-medium leading-relaxed text-center">
               {mode === "login"
                 ? "Resuming mission. Enter your secure credentials to proceed."
                 : "Establish your profile or command center and start mastering your workflow today."}
-            </p>
-          </div>
+            </CardDescription>
+          </CardHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {mode === "register" && (
-              <div className="grid grid-cols-2 gap-2 p-1 bg-white/5 rounded-2xl border border-white/5">
-                <button
-                  type="button"
-                  onClick={() => setIsAdminRegistration(false)}
-                  className={cn(
-                    "flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all",
-                    !isAdminRegistration
-                      ? "bg-primary text-primary-foreground shadow-xl"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <User className="h-3 w-3" />
-                  Individual
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAdminRegistration(true)}
-                  className={cn(
-                    "flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all",
-                    isAdminRegistration
-                      ? "bg-primary text-primary-foreground shadow-xl"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <Building2 className="h-3 w-3" />
-                  Admin / Team
-                </button>
-              </div>
-            )}
-
-            <div className="space-y-5">
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
               {mode === "register" && (
+                <div className="grid grid-cols-2 gap-2 p-1 bg-secondary rounded-2xl border-2 border-foreground">
+                  <button
+                    type="button"
+                    onClick={() => setIsAdminRegistration(false)}
+                    className={cn(
+                      "flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border-2",
+                      !isAdminRegistration
+                        ? "bg-foreground text-background border-foreground shadow-xl"
+                        : "text-muted-foreground hover:text-foreground border-transparent"
+                    )}
+                  >
+                    <User className="h-4 w-4 stroke-[2.5px]" />
+                    Individual
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsAdminRegistration(true)}
+                    className={cn(
+                      "flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border-2",
+                      isAdminRegistration
+                        ? "bg-foreground text-background border-foreground shadow-xl"
+                        : "text-muted-foreground hover:text-foreground border-transparent"
+                    )}
+                  >
+                    <Building2 className="h-4 w-4 stroke-[2.5px]" />
+                    Admin / Team
+                  </button>
+                </div>
+              )}
+
+              <div className="space-y-5">
+                {mode === "register" && (
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="name"
+                      className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1"
+                    >
+                      Full Name
+                    </Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="E.g. John Wick"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="h-14 bg-muted/50 border-border focus:border-primary/50 transition-all rounded-2xl text-sm font-medium"
+                    />
+                  </div>
+                )}
+
+                {mode === "register" && isAdminRegistration && (
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="companyName"
+                      className="text-[10px] font-black uppercase tracking-[0.2em] text-primary ml-1"
+                    >
+                      Workspace Name
+                    </Label>
+                    <Input
+                      id="companyName"
+                      type="text"
+                      placeholder="Acme Global Ops."
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      required
+                      className="h-14 bg-primary/10 border-primary/20 focus:border-primary/40 transition-all rounded-2xl text-sm font-medium text-foreground placeholder:text-primary/30"
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label
-                    htmlFor="name"
-                    className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1"
+                    htmlFor="email"
+                    className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1"
                   >
-                    Full Name
+                    Email Address
                   </Label>
                   <Input
-                    id="name"
-                    type="text"
-                    placeholder="E.g. John Wick"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    id="email"
+                    type="email"
+                    placeholder="commander@prioritize.io"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     className="h-14 bg-muted/50 border-border focus:border-primary/50 transition-all rounded-2xl text-sm font-medium"
                   />
                 </div>
-              )}
 
-              {mode === "register" && isAdminRegistration && (
                 <div className="space-y-2">
                   <Label
-                    htmlFor="companyName"
-                    className="text-[10px] font-black uppercase tracking-[0.2em] text-primary ml-1"
+                    htmlFor="password"
+                    className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1"
                   >
-                    Workspace Name
+                    Access Code
                   </Label>
                   <Input
-                    id="companyName"
-                    type="text"
-                    placeholder="Acme Global Ops."
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-14 bg-primary/10 border-primary/20 focus:border-primary/40 transition-all rounded-2xl text-sm font-medium text-foreground placeholder:text-primary/30"
+                    className="h-14 bg-muted/50 border-border focus:border-primary/50 transition-all rounded-2xl text-sm font-medium"
                   />
+                </div>
+              </div>
+
+              {error && (
+                <div className="text-[11px] font-bold text-red-400 bg-red-500/10 p-4 rounded-2xl border border-red-500/20">
+                  {error}
                 </div>
               )}
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1"
-                >
-                  Email Address
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="commander@prioritize.io"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-14 bg-muted/50 border-border focus:border-primary/50 transition-all rounded-2xl text-sm font-medium"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1"
-                >
-                  Access Code
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-14 bg-muted/50 border-border focus:border-primary/50 transition-all rounded-2xl text-sm font-medium"
-                />
-              </div>
-            </div>
-
-            {error && (
-              <div className="text-[11px] font-bold text-red-400 bg-red-500/10 p-4 rounded-2xl border border-red-500/20">
-                {error}
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full h-14 text-xs font-black uppercase tracking-[0.2em] rounded-2xl bg-primary text-primary-foreground hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 group"
-              disabled={loading}
-            >
-              {loading ? (
-                "Authorizing..."
-              ) : (
-                <span className="flex items-center gap-2">
-                  {mode === "login"
-                    ? "Enter Command Center"
-                    : "Initialize Workspace"}
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </span>
-              )}
-            </Button>
-
-            <div className="pt-4 flex items-center justify-between text-[11px] font-bold">
+              <Button
+                type="submit"
+                className="w-full h-14 text-xs font-black uppercase tracking-[0.2em] rounded-2xl bg-primary text-primary-foreground hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-primary/20 group"
+                disabled={loading}
+              >
+                {loading ? (
+                  "Authorizing..."
+                ) : (
+                  <span className="flex items-center gap-2">
+                    {mode === "login"
+                      ? "Enter Command Center"
+                      : "Initialize Workspace"}
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-center border-t border-border/10 p-6">
+            <div className="flex items-center gap-2 text-[11px] font-bold">
               <span className="text-muted-foreground">
                 {mode === "login"
                   ? "New to the system?"
@@ -242,8 +253,8 @@ export function AuthForm({ mode }: AuthFormProps) {
                 {mode === "login" ? "Create Profile" : "Secure Login"}
               </button>
             </div>
-          </form>
-        </div>
+          </CardFooter>
+        </Card>
       </div>
 
       {/* Right Column - Premium Visualization */}

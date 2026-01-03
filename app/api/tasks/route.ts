@@ -70,8 +70,8 @@ export async function POST(request: NextRequest) {
                 } : undefined,
             },
             include: {
-                creator: { select: { id: true, email: true, name: true } },
-                assignedUsers: { include: { user: { select: { id: true, email: true, name: true } } } },
+                creator: { select: { id: true, email: true, name: true, avatar: true } },
+                assignedUsers: { include: { user: { select: { id: true, email: true, name: true, avatar: true } } } },
             },
         })
 
@@ -223,8 +223,8 @@ export async function GET(request: NextRequest) {
                 take: limit,
                 orderBy: { createdAt: 'desc' },
                 include: {
-                    creator: { select: { id: true, email: true, name: true } },
-                    assignedUsers: { include: { user: { select: { id: true, email: true, name: true } } } },
+                    creator: { select: { id: true, email: true, name: true, avatar: true } },
+                    assignedUsers: { include: { user: { select: { id: true, email: true, name: true, avatar: true } } } },
                 },
             }),
             prisma.task.count({ where }),

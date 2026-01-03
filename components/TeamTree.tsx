@@ -47,6 +47,67 @@ export function TeamTree({
   // Only show team as active if we're actually on that team's page
   const activeTeamId = urlTeamId || null;
 
+  const getPriorityScore = (p: string) => {
+    switch (p) {
+      case "URGENT":
+        return 4;
+      case "HIGH":
+        return 3;
+      case "MEDIUM":
+        return 2;
+      case "LOW":
+        return 1;
+      default:
+        return 0;
+    }
+  };
+
+  const getUrgencyColor = (tasks: any[]) => {
+    const activeTasks = tasks.filter((t: any) => t.status !== "COMPLETED");
+    if (activeTasks.length === 0) return null;
+
+    const maxPriority = Math.max(
+      0,
+      ...activeTasks.map((t: any) => getPriorityScore(t.priority))
+    );
+
+    switch (maxPriority) {
+      case 4:
+        return "bg-red-500 text-white border-red-600 hover:bg-red-600 font-bold shadow-md shadow-red-500/20"; // Urgent - Solid Red
+      case 3:
+        return "bg-orange-500 text-white border-orange-600 hover:bg-orange-600 font-bold shadow-md shadow-orange-500/20"; // High - Solid Orange
+      case 2:
+        return "bg-yellow-400 text-black border-yellow-500 hover:bg-yellow-500 font-bold shadow-md shadow-yellow-500/20"; // Medium - Solid Yellow
+      case 1:
+        return "bg-blue-500 text-white border-blue-600 hover:bg-blue-600 font-bold shadow-md shadow-blue-500/20"; // Low - Solid Blue
+      default:
+        return null;
+    }
+  };
+
+  const sortedMemberships = [...memberships].sort((a, b) => {
+    const tasksA = (a.company as any).tasks || [];
+    const activeTasksA = tasksA.filter((t: any) => t.status !== "COMPLETED");
+
+    const tasksB = (b.company as any).tasks || [];
+    const activeTasksB = tasksB.filter((t: any) => t.status !== "COMPLETED");
+
+    if (activeTasksA.length !== activeTasksB.length) {
+      return activeTasksB.length - activeTasksA.length;
+    }
+
+    const maxPriorityA = Math.max(
+      0,
+      ...activeTasksA.map((t: any) => getPriorityScore(t.priority))
+    );
+    const maxPriorityB = Math.max(
+      0,
+      ...activeTasksB.map((t: any) => getPriorityScore(t.priority))
+    );
+
+    return maxPriorityB - maxPriorityA;
+  });
+
   const handleSelectTeam = async (companyId: string) => {
     try {
       await api.companies.switch(companyId);
@@ -76,7 +137,7 @@ export function TeamTree({
   };
 
   // Total items: New Team button + all memberships
-  const totalItems = memberships.length + 1;
+  const totalItems = sortedMemberships.length + 1;
 
   // COLLAPSED STATE - Show teams as icon list with shared expand state
   if (collapsed) {
@@ -118,8 +179,14 @@ export function TeamTree({
               </div>
 
               {/* Team icons list */}
-              {memberships.map((membership) => {
+              {sortedMemberships.map((membership) => {
                 const isSelected = activeTeamId === membership.companyId;
+                const tasks = (membership.company as any).tasks || [];
+                const activeTaskCount = tasks.filter(
+                  (t: any) => t.status !== "COMPLETED"
+                ).length;
+                const urgencyClasses = getUrgencyColor(tasks);
+
                 return (
                   <div
                     key={membership.companyId}
@@ -128,16 +195,19 @@ export function TeamTree({
                     <button
                       onClick={() => handleSelectTeam(membership.companyId)}
                       className={cn(
-                        "h-9 w-9 rounded-xl flex items-center justify-center transition-all text-[11px] font-bold",
+                        "h-9 w-9 rounded-xl flex items-center justify-center transition-all text-[11px] font-bold border",
                         isSelected
-                          ? "bg-primary/20 text-primary ring-2 ring-primary/30"
-                          : "bg-muted/30 text-muted-foreground hover:bg-[#125DB0] hover:text-white"
+                          ? "bg-primary/20 text-primary ring-2 ring-primary/30 border-transparent"
+                          : urgencyClasses
+                          ? urgencyClasses
+                          : "bg-muted/30 text-muted-foreground hover:bg-[#125DB0] hover:text-white border-transparent"
                       )}
                     >
                       {membership.company.name[0].toUpperCase()}
                     </button>
-                    <div className="absolute left-full ml-4 px-3 py-1.5 bg-background border shadow-xl rounded-lg text-[10px] font-bold opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-all scale-95 group-hover:scale-100 origin-left">
-                      {membership.company.name}
+                    <div className="absolute left-full ml-4 px-3 py-1.5 bg-background border shadow-xl rounded-lg text-[10px] font-bold opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-all scale-95 group-hover:scale-100 origin-left flex items-center gap-2">
+                      <span>{membership.company.name}</span>
+                      <span className="opacity-70">({activeTaskCount})</span>
                     </div>
                   </div>
                 );
@@ -202,7 +272,7 @@ export function TeamTree({
                 style={{ left: "-12px" }}
               />
               {/* L-corner if this is the only item */}
-              {memberships.length === 0 && (
+              {sortedMemberships.length === 0 && (
                 <div
                   className="absolute w-[2px] bg-card"
                   style={{ left: "-12px", top: "50%", height: "50%" }}
@@ -220,9 +290,14 @@ export function TeamTree({
             </div>
 
             {/* Existing teams */}
-            {memberships.map((membership, index) => {
+            {sortedMemberships.map((membership, index) => {
               const isSelected = activeTeamId === membership.companyId;
-              const isLast = index === memberships.length - 1;
+              const isLast = index === sortedMemberships.length - 1;
+              const tasks = (membership.company as any).tasks || [];
+              const activeTaskCount = tasks.filter(
+                (t: any) => t.status !== "COMPLETED"
+              ).length;
+              const urgencyClasses = getUrgencyColor(tasks);
 
               return (
                 <div
@@ -254,10 +329,12 @@ export function TeamTree({
                     {/* Team initial badge */}
                     <div
                       className={cn(
-                        "h-6 w-6 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 transition-all",
+                        "h-6 w-6 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 transition-all border",
                         isSelected
-                          ? "bg-white text-[#125DB0]"
-                          : "bg-muted/50 text-muted-foreground group-hover/team:bg-white/90 group-hover/team:text-[#125DB0]"
+                          ? "bg-white text-[#125DB0] border-transparent"
+                          : urgencyClasses
+                          ? urgencyClasses
+                          : "bg-muted/50 text-muted-foreground group-hover/team:bg-white/90 group-hover/team:text-[#125DB0] border-transparent"
                       )}
                     >
                       {membership.company.name[0].toUpperCase()}
@@ -272,6 +349,20 @@ export function TeamTree({
                     >
                       {membership.company.name}
                     </span>
+
+                    {/* Task count badge */}
+                    {activeTaskCount > 0 && (
+                      <span
+                        className={cn(
+                          "text-[10px] font-bold px-1.5 py-0.5 rounded-md",
+                          isSelected
+                            ? "bg-white/20 text-white"
+                            : "bg-muted text-muted-foreground"
+                        )}
+                      >
+                        {activeTaskCount}
+                      </span>
+                    )}
 
                     {/* Selected indicator */}
                     {isSelected && (

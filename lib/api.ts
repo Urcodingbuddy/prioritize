@@ -50,6 +50,14 @@ export const api = {
             return handleResponse(response)
         },
     },
+    updateProfile: async (data: { name?: string; avatar?: string }) => {
+        const response = await fetchWithCredentials(`${API_BASE}/auth/me`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        })
+        return handleResponse(response)
+    },
 
     companies: {
         create: async (name: string) => {

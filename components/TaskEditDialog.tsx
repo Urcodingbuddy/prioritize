@@ -144,7 +144,10 @@ export function TaskEditDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md p-0 bg-zinc-900 border-zinc-800 rounded-2xl overflow-hidden">
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-md p-0 bg-zinc-900 border-zinc-800 rounded-2xl overflow-hidden"
+      >
         <VisuallyHidden>
           <DialogTitle>Edit Task</DialogTitle>
         </VisuallyHidden>

@@ -11,7 +11,10 @@ import {
   Loader2,
   Mail,
   Calendar,
+  X,
+  Check,
 } from "lucide-react";
+import { AVATAR_SEEDS, getAvatarUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,6 +24,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { User } from "@/lib/types";
+import { useAuth } from "@/lib/AuthContext";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -30,6 +34,7 @@ interface SettingsDialogProps {
 
 export function SettingsDialog({ open, onClose, user }: SettingsDialogProps) {
   const router = useRouter();
+  const { refetchUser } = useAuth();
   const [activeTab, setActiveTab] = useState<"profile" | "security">("profile");
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -53,7 +58,16 @@ export function SettingsDialog({ open, onClose, user }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden p-0">
+      <DialogContent
+        showCloseButton={false}
+        className="w-full sm:max-w-4xl max-h-[85vh] overflow-hidden p-0"
+      >
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 h-8 w-8 rounded-sm hover:bg-muted flex items-center justify-center transition-colors text-muted-foreground z-50"
+        >
+          <X className="h-4 w-4" />
+        </button>
         <div className="flex h-[500px]">
           {/* Sidebar */}
           <div className="w-56 bg-muted/30 border-r border-border p-4 flex flex-col">
@@ -98,10 +112,50 @@ export function SettingsDialog({ open, onClose, user }: SettingsDialogProps) {
                       Profile
                     </span>
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-white font-black">
-                        {user?.name?.[0]?.toUpperCase() || "U"}
+                      <div className="h-16 w-16 rounded-md bg-secondary/30 border border-border overflow-hidden shrink-0 shadow-sm relative">
+                        {/* Use seed if available, otherwise name */}
+                        <img
+                          src={getAvatarUrl(user?.avatar || user?.name)}
+                          alt="Avatar"
+                          className="h-full w-full object-cover"
+                        />
                       </div>
-                      <span className="text-sm font-medium">{user?.name}</span>
+                      <div className="space-y-1">
+                        <span className="text-sm font-medium block">
+                          {user?.name}
+                        </span>
+                        <div className="flex gap-2 flex-wrap max-w-[300px]">
+                          {AVATAR_SEEDS.map((seed) => (
+                            <button
+                              key={seed}
+                              onClick={async () => {
+                                try {
+                                  await api.updateProfile({ avatar: seed });
+                                  await refetchUser();
+                                } catch (err: any) {
+                                  console.error(
+                                    "Failed to update avatar:",
+                                    err.message || err
+                                  );
+                                }
+                              }}
+                              className={cn(
+                                "h-8 w-8 rounded-md hover:scale-110 transition-transform overflow-hidden border border-border/50",
+                                user?.avatar === seed
+                                  ? "ring-2 ring-primary border-primary"
+                                  : ""
+                              )}
+                              title={`Select ${seed}`}
+                            >
+                              <img
+                                src={getAvatarUrl(seed)}
+                                alt={seed}
+                                className="h-full w-full object-cover"
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -110,10 +164,15 @@ export function SettingsDialog({ open, onClose, user }: SettingsDialogProps) {
                     <span className="text-sm text-muted-foreground">
                       Email address
                     </span>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium">{user?.email}</span>
-                      <span className="px-2 py-0.5 bg-secondary text-[10px] font-bold rounded-full uppercase">
+                    <div className="flex items-center gap-2 max-w-[200px] sm:max-w-xs">
+                      <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <span
+                        className="text-sm font-medium truncate"
+                        title={user?.email}
+                      >
+                        {user?.email}
+                      </span>
+                      <span className="px-2 py-0.5 bg-secondary text-[10px] font-bold rounded-full uppercase shrink-0">
                         Primary
                       </span>
                     </div>

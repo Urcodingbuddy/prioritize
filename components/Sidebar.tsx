@@ -11,6 +11,7 @@ import {
   PanelLeftClose,
   PanelLeft,
 } from "lucide-react";
+import { getAvatarUrl } from "@/lib/utils";
 import Logo from "./Logo";
 import { Button } from "@/components/ui/button";
 import { useState, useCallback, memo } from "react";
@@ -22,6 +23,13 @@ import { SettingsDialog } from "@/components/SettingsDialog";
 import { NotificationDialog } from "@/components/NotificationDialog";
 import { Bell } from "lucide-react";
 import { useSoundEffects } from "@/hooks/use-sound-effects";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -79,11 +87,11 @@ export const Sidebar = memo(function Sidebar({
   const currentCompanyId = user?.currentCompanyId;
 
   return (
-    <>
+    <TooltipProvider>
       <aside
         className={cn(
           "group/sidebar h-[calc(100vh-24px)] bg-sidebar border-r border-sidebar-border transition-all duration-300 flex flex-col fixed left-0 top-0 z-30",
-          collapsed ? "w-[60px]" : "w-[280px]"
+          collapsed ? "w-[60px]" : "w-[320px]"
         )}
       >
         {/* Border toggle - clickable right edge */}
@@ -131,10 +139,7 @@ export const Sidebar = memo(function Sidebar({
           {loading ? (
             // Skeleton loader
             Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-9 w-full bg-secondary/20 rounded-xl animate-pulse mb-1"
-              />
+              <Skeleton key={i} className="h-9 w-full mb-1 rounded-xl" />
             ))
           ) : (
             <>
@@ -149,73 +154,77 @@ export const Sidebar = memo(function Sidebar({
               )}
 
               {/* Home Link */}
-              <Link
-                href="/home"
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all relative group",
-                  pathname === "/home"
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "text-muted-foreground/70 hover:bg-[#125DB0] hover:text-white"
-                )}
-              >
-                <Home
-                  className={cn(
-                    "h-5 w-5 shrink-0 transition-transform",
-                    pathname === "/home" && "scale-110"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "truncate transition-all duration-300",
-                    collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
-                  )}
-                >
-                  Home
-                </span>
-                {pathname === "/home" && (
-                  <div className="absolute left-0 w-1 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
-                )}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/home"
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all relative group",
+                      pathname === "/home"
+                        ? "bg-primary/10 text-primary shadow-sm"
+                        : "text-foreground/80 hover:bg-[#125DB0] hover:text-white"
+                    )}
+                  >
+                    <Home
+                      className={cn(
+                        "h-5 w-5 shrink-0 transition-transform",
+                        pathname === "/home" && "scale-110"
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "truncate transition-all duration-300",
+                        collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+                      )}
+                    >
+                      Home
+                    </span>
+                    {pathname === "/home" && (
+                      <div className="absolute left-0 w-1 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                    )}
+                  </Link>
+                </TooltipTrigger>
                 {collapsed && (
-                  <div className="absolute left-full ml-4 px-3 py-1.5 bg-background border shadow-xl rounded-lg text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-all scale-95 group-hover:scale-100 origin-left">
-                    Home
-                  </div>
+                  <TooltipContent side="right">Home</TooltipContent>
                 )}
-              </Link>
+              </Tooltip>
 
               {/* My Tasks Link */}
-              <Link
-                href="/my-tasks"
-                onClick={() => playClick()}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all relative group",
-                  pathname === "/my-tasks"
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "text-muted-foreground/70 hover:bg-[#125DB0] hover:text-white"
-                )}
-              >
-                <CheckCircle2
-                  className={cn(
-                    "h-5 w-5 shrink-0 transition-transform",
-                    pathname === "/my-tasks" && "scale-110"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "truncate transition-all duration-300",
-                    collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
-                  )}
-                >
-                  My Tasks
-                </span>
-                {pathname === "/my-tasks" && (
-                  <div className="absolute left-0 w-1 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
-                )}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/my-tasks"
+                    onClick={() => playClick()}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all relative group",
+                      pathname === "/my-tasks"
+                        ? "bg-primary/10 text-primary shadow-sm"
+                        : "text-foreground/80 hover:bg-[#125DB0] hover:text-white"
+                    )}
+                  >
+                    <CheckCircle2
+                      className={cn(
+                        "h-5 w-5 shrink-0 transition-transform",
+                        pathname === "/my-tasks" && "scale-110"
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "truncate transition-all duration-300",
+                        collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+                      )}
+                    >
+                      My Tasks
+                    </span>
+                    {pathname === "/my-tasks" && (
+                      <div className="absolute left-0 w-1 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                    )}
+                  </Link>
+                </TooltipTrigger>
                 {collapsed && (
-                  <div className="absolute left-full ml-4 px-3 py-1.5 bg-background border shadow-xl rounded-lg text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-all scale-95 group-hover:scale-100 origin-left">
-                    My Tasks
-                  </div>
+                  <TooltipContent side="right">My Tasks</TooltipContent>
                 )}
-              </Link>
+              </Tooltip>
 
               {/* Teams Tree */}
               <TeamTree
@@ -232,51 +241,55 @@ export const Sidebar = memo(function Sidebar({
 
         {/* Notifications Button (Fixed at Bottom) */}
         <div className="px-2 pb-2">
-          <button
-            onClick={() => {
-              playClick();
-              setShowNotifications(true);
-            }}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all relative group w-full text-left",
-              showNotifications
-                ? "bg-primary/10 text-primary shadow-sm"
-                : "text-muted-foreground/70 hover:bg-[#125DB0] hover:text-white"
-            )}
-          >
-            <div className="relative">
-              <Bell
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => {
+                  playClick();
+                  setShowNotifications(true);
+                }}
                 className={cn(
-                  "h-5 w-5 shrink-0 transition-transform",
-                  showNotifications && "scale-110"
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all relative group w-full text-left",
+                  showNotifications
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : "text-foreground/80 hover:bg-[#125DB0] hover:text-white"
                 )}
-              />
-              {hasUnread && (
-                <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-sidebar shadow-sm animate-pulse" />
-              )}
-            </div>
-            <span
-              className={cn(
-                "truncate transition-all duration-300",
-                collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
-              )}
-            >
-              Notifications
-            </span>
-            {hasUnread && !collapsed && (
-              <div className="ml-auto">
-                <span className="h-2 w-2 rounded-full bg-red-500 block" />
-              </div>
-            )}
-            {showNotifications && (
-              <div className="absolute left-0 w-1 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
-            )}
+              >
+                <div className="relative">
+                  <Bell
+                    className={cn(
+                      "h-5 w-5 shrink-0 transition-transform",
+                      showNotifications && "scale-110"
+                    )}
+                  />
+                  {hasUnread && (
+                    <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-sidebar shadow-sm animate-pulse" />
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "truncate transition-all duration-300",
+                    collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+                  )}
+                >
+                  Notifications
+                </span>
+                {hasUnread && !collapsed && (
+                  <div className="ml-auto">
+                    <span className="h-2 w-2 rounded-full bg-red-500 block" />
+                  </div>
+                )}
+                {showNotifications && (
+                  <div className="absolute left-0 w-1 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                )}
+              </button>
+            </TooltipTrigger>
             {collapsed && (
-              <div className="absolute left-full ml-4 px-3 py-1.5 bg-background border shadow-xl rounded-lg text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-all scale-95 group-hover:scale-100 origin-left">
+              <TooltipContent side="right">
                 Notifications {hasUnread && "•"}
-              </div>
+              </TooltipContent>
             )}
-          </button>
+          </Tooltip>
         </div>
 
         {/* User Section with Settings and Theme Toggle */}
@@ -298,15 +311,23 @@ export const Sidebar = memo(function Sidebar({
                 {/* Theme Toggle */}
                 <ThemeToggle />
                 {/* User Avatar */}
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center text-[10px] font-black text-primary border border-primary/10">
-                  {user?.name?.[0]?.toUpperCase() || "U"}
+                <div className="h-9 w-9 rounded-xl overflow-hidden border border-primary/20 shadow-sm bg-secondary/50">
+                  <img
+                    src={getAvatarUrl(user?.avatar || user?.name)}
+                    alt="Avatar"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               </div>
             ) : (
               <div className="flex items-center gap-2 p-2 rounded-2xl bg-secondary/30 border border-border/40 w-full">
                 {/* User Avatar */}
-                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center text-[10px] font-black text-primary shrink-0 border border-primary/10">
-                  {user?.name?.[0]?.toUpperCase() || "U"}
+                <div className="h-8 w-8 rounded-xl overflow-hidden shrink-0 border border-primary/20 shadow-sm bg-secondary/50">
+                  <img
+                    src={getAvatarUrl(user?.avatar || user?.name)}
+                    alt="Avatar"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
                 {/* User Info */}
                 <div className="flex-1 overflow-hidden text-left">
@@ -349,6 +370,6 @@ export const Sidebar = memo(function Sidebar({
         onUpdate={checkNotifications}
         onTeamJoined={refetchUser}
       />
-    </>
+    </TooltipProvider>
   );
 });

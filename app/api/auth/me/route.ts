@@ -19,12 +19,22 @@ export async function GET() {
                 id: true,
                 email: true,
                 name: true,
+                avatar: true,
                 role: true,
                 createdAt: true,
                 updatedAt: true,
                 memberships: {
                     include: {
-                        company: true
+                        company: {
+                            include: {
+                                tasks: {
+                                    select: {
+                                        priority: true,
+                                        status: true,
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -49,6 +59,47 @@ export async function GET() {
     } catch (error: any) {
         return NextResponse.json(
             { success: false, error: error.message || 'Failed to get user' },
+            { status: 500 }
+        )
+    }
+}
+
+export async function PATCH(request: Request) {
+    try {
+        const currentUser = await getCurrentUser()
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { success: false, error: 'Not authenticated' },
+                { status: 401 }
+            )
+        }
+
+        const body = await request.json()
+        const { avatar, name } = body
+
+        const updatedUser = await prisma.user.update({
+            where: { id: currentUser.userId },
+            data: {
+                ...(avatar && { avatar }),
+                ...(name && { name }),
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                avatar: true,
+                role: true,
+            }
+        })
+
+        return NextResponse.json({
+            success: true,
+            data: updatedUser
+        })
+    } catch (error: any) {
+        return NextResponse.json(
+            { success: false, error: error.message || 'Failed to update user' },
             { status: 500 }
         )
     }

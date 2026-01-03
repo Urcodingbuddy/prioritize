@@ -14,6 +14,7 @@ import {
   UserPlus,
   Trash2,
 } from "lucide-react";
+import { getAvatarUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,6 +24,26 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSoundEffects } from "@/hooks/use-sound-effects";
@@ -33,6 +54,7 @@ interface Member {
   name: string;
   role: "USER" | "ADMIN" | "OFFICER";
   joinedAt: string;
+  avatar?: string;
 }
 
 interface TeamManagementDialogProps {
@@ -95,12 +117,8 @@ export function TeamManagementDialog({
     }
   };
 
-  const handleRemoveMember = async (e: React.MouseEvent, userId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleRemoveMember = async (userId: string) => {
     playClick();
-
-    if (!confirm("Are you sure you want to remove this member?")) return;
 
     try {
       setError("");
@@ -172,11 +190,11 @@ export function TeamManagementDialog({
   const getRoleBadge = (role: string) => {
     switch (role) {
       case "ADMIN":
-        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+        return "destructive"; // Closest to 'amber' distinctive look in default palette
       case "OFFICER":
-        return "bg-primary/10 text-primary border-primary/20";
+        return "secondary";
       default:
-        return "bg-muted text-muted-foreground border-border";
+        return "outline";
     }
   };
 
@@ -186,8 +204,17 @@ export function TeamManagementDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onClose}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
-          <DialogHeader>
+        <DialogContent
+          showCloseButton={false}
+          className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
+        >
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 h-8 w-8 rounded-sm hover:bg-muted flex items-center justify-center transition-colors text-muted-foreground z-50"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <DialogHeader className="pr-10">
             <DialogTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
@@ -215,9 +242,9 @@ export function TeamManagementDialog({
           </DialogHeader>
 
           {error && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-xs text-destructive">
-              {error}
-            </div>
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           <div className="flex-1 overflow-y-auto space-y-4">
@@ -243,21 +270,22 @@ export function TeamManagementDialog({
                         className="p-3 flex items-center justify-between hover:bg-muted/20 transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-lg bg-secondary flex items-center justify-center text-xs font-bold">
-                            {member.name[0].toUpperCase()}
+                          <div className="h-8 w-8 rounded-md bg-secondary/30 border border-border overflow-hidden shrink-0 shadow-sm relative">
+                            <img
+                              src={getAvatarUrl(member.avatar || member.name)}
+                              alt={member.name}
+                              className="h-full w-full object-cover"
+                            />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
                               <p className="text-sm font-bold">{member.name}</p>
-                              <span
-                                className={cn(
-                                  "px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border flex items-center gap-1",
-                                  getRoleBadge(member.role)
-                                )}
+                              <Badge
+                                variant={getRoleBadge(member.role) as any}
+                                className="ml-1"
                               >
-                                {getRoleIcon(member.role)}
                                 {member.role}
-                              </span>
+                              </Badge>
                             </div>
                             <p className="text-[10px] text-muted-foreground">
                               {member.email}
@@ -269,27 +297,58 @@ export function TeamManagementDialog({
                           member.id !== currentUserId &&
                           member.role !== "ADMIN" && (
                             <div className="flex items-center gap-2">
-                              <select
+                              <Select
                                 value={member.role}
-                                onChange={(e) =>
-                                  handleRoleChange(member.id, e.target.value)
-                                }
-                                className="h-7 px-2 text-[10px] font-bold bg-secondary border-0 rounded-lg cursor-pointer"
-                              >
-                                <option value="USER">User</option>
-                                <option value="OFFICER">Officer</option>
-                              </select>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                                onClick={(e) =>
-                                  handleRemoveMember(e, member.id)
+                                onValueChange={(val) =>
+                                  handleRoleChange(member.id, val)
                                 }
                               >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
+                                <SelectTrigger className="w-24 h-8">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="USER">User</SelectItem>
+                                  <SelectItem value="OFFICER">
+                                    Officer
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Remove Member?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to remove{" "}
+                                      {member.name} from the team?
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      onClick={() =>
+                                        handleRemoveMember(member.id)
+                                      }
+                                    >
+                                      Remove
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           )}
                       </div>

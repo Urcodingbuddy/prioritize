@@ -13,9 +13,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { Globe2, Lock } from "lucide-react";
+import { Globe2, Lock, CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 
 interface TaskFormProps {
   task?: Task | null;
@@ -182,7 +199,7 @@ export function TaskForm({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="What objective are we tackling?"
                 required
-                className="h-11 bg-secondary/30 border-transparent focus:border-border transition-all text-sm"
+                className="h-9"
               />
             </div>
 
@@ -193,12 +210,12 @@ export function TaskForm({
               >
                 Description
               </Label>
-              <textarea
+              <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Add some details..."
-                className="w-full min-h-[120px] p-3 rounded-lg bg-secondary/30 border-transparent border focus:border-border transition-all text-sm outline-none resize-none"
+                className="min-h-[120px] resize-none"
               />
             </div>
 
@@ -210,13 +227,34 @@ export function TaskForm({
                 >
                   Due Date
                 </Label>
-                <Input
-                  id="dueDate"
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  className="bg-secondary/30 border-transparent focus:border-border transition-all text-sm"
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !dueDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dueDate ? (
+                        format(new Date(dueDate), "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={dueDate ? new Date(dueDate) : undefined}
+                      onSelect={(date) =>
+                        setDueDate(date ? date.toISOString().split("T")[0] : "")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <div className="space-y-2">
@@ -226,17 +264,20 @@ export function TaskForm({
                 >
                   Priority
                 </Label>
-                <select
-                  id="priority"
+                <Select
                   value={priority}
-                  onChange={(e) => setPriority(e.target.value as Priority)}
-                  className="w-full h-10 px-3 rounded-md bg-secondary/30 border-transparent border focus:border-border transition-all text-sm outline-none appearance-none cursor-pointer"
+                  onValueChange={(value: Priority) => setPriority(value)}
                 >
-                  <option value="LOW">Low</option>
-                  <option value="MEDIUM">Medium</option>
-                  <option value="HIGH">High</option>
-                  <option value="URGENT">Urgent</option>
-                </select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="LOW">Low</SelectItem>
+                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                    <SelectItem value="HIGH">High</SelectItem>
+                    <SelectItem value="URGENT">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -278,17 +319,12 @@ export function TaskForm({
                             </span>
                           </div>
                         </div>
-                        <div
-                          className={cn(
-                            "h-4 w-4 rounded-full border flex items-center justify-center transition-all",
-                            assignedUserIds.includes(user.id)
-                              ? "bg-primary border-primary"
-                              : "border-border"
-                          )}
-                        >
-                          {assignedUserIds.includes(user.id) && (
-                            <div className="h-1.5 w-1.5 rounded-full bg-white transition-all scale-100" />
-                          )}
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`user-${user.id}`}
+                            checked={assignedUserIds.includes(user.id)}
+                            onCheckedChange={() => toggleUser(user.id)}
+                          />
                         </div>
                       </div>
                     ))
@@ -299,9 +335,9 @@ export function TaskForm({
           </div>
 
           {error && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium rounded-lg animate-in fade-in slide-in-from-top-1">
-              {error}
-            </div>
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           <DialogFooter className="gap-2">

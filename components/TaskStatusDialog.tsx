@@ -87,7 +87,10 @@ export function TaskStatusDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm p-0 bg-zinc-900 border-zinc-800 rounded-2xl overflow-hidden">
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-sm p-0 bg-zinc-900 border-zinc-800 rounded-2xl overflow-hidden"
+      >
         <VisuallyHidden>
           <DialogTitle>Task Status</DialogTitle>
         </VisuallyHidden>

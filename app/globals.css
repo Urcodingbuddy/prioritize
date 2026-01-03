@@ -59,40 +59,40 @@
 
   /* Light Mode - Warm Golden Cream (#F2E2B1) */
   --background: 45 71% 82%;
-  --foreground: 220 15% 15%;
+  --foreground: 0 0% 0%;
 
-  --card: 40 15% 98%;
-  --card-foreground: 220 15% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
 
-  --popover: 40 15% 99%;
-  --popover-foreground: 220 15% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
 
   --primary: 210 82% 38%; /* #125DB0 blue */
   --primary-foreground: 40 20% 96%;
 
   --secondary: 40 10% 92%;
-  --secondary-foreground: 220 15% 15%;
+  --secondary-foreground: 0 0% 0%;
 
   --muted: 40 10% 90%;
-  --muted-foreground: 220 10% 40%;
+  --muted-foreground: 0 0% 20%; /* Much darker gray for muted text */
 
   --accent: 40 10% 90%;
-  --accent-foreground: 220 15% 15%;
+  --accent-foreground: 0 0% 0%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 0 0% 85%;
-  --input: 0 0% 85%;
+  --border: 0 0% 0%;
+  --input: 0 0% 0%;
   --ring: 210 82% 38%;
 
   /* Sidebar Specific */
   --sidebar: 0 0% 97%;
-  --sidebar-foreground: 0 0% 25%;
+  --sidebar-foreground: 0 0% 0%;
   --sidebar-primary: 210 82% 38%;
   --sidebar-primary-foreground: 0 0% 98%;
   --sidebar-accent: 0 0% 92%;
-  --sidebar-accent-foreground: 0 0% 10%;
+  --sidebar-accent-foreground: 0 0% 0%;
   --sidebar-border: 0 0% 88%;
   --sidebar-ring: 210 82% 38%;
 
@@ -109,29 +109,29 @@
   --background: 0 0% 9%; /* #161616 */
   --foreground: 0 0% 96%;
 
-  --card: 0 0% 12%; /* #1F1F1F slightly lighter */
-  --card-foreground: 0 0% 96%;
+  --card: 0 0% 12%; /* #1F1F1F */
+  --card-foreground: 0 0% 100%;
 
   --popover: 0 0% 12%;
-  --popover-foreground: 0 0% 96%;
+  --popover-foreground: 0 0% 100%;
 
   --primary: 210 82% 38%; /* #125DB0 blue */
-  --primary-foreground: 0 0% 98%;
+  --primary-foreground: 0 0% 100%;
 
   --secondary: 0 0% 15%; /* #262626 */
-  --secondary-foreground: 0 0% 96%;
+  --secondary-foreground: 0 0% 100%;
 
   --muted: 0 0% 18%; /* #2E2E2E */
-  --muted-foreground: 0 0% 60%;
+  --muted-foreground: 0 0% 80%;
 
   --accent: 0 0% 16%;
-  --accent-foreground: 0 0% 96%;
+  --accent-foreground: 0 0% 100%;
 
   --destructive: 0 62.8% 50%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive-foreground: 0 0% 100%;
 
-  --border: 0 0% 18%;
-  --input: 0 0% 18%;
+  --border: 0 0% 40%; /* White borders in dark mode */
+  --input: 0 0% 40%;
   --ring: 210 82% 38%;
 
   /* Sidebar Specific */
@@ -141,7 +141,7 @@
   --sidebar-primary-foreground: 0 0% 98%;
   --sidebar-accent: 0 0% 15%;
   --sidebar-accent-foreground: 0 0% 96%;
-  --sidebar-border: 0 0% 16%;
+  --sidebar-border: 0 0% 40%; /* border-white/40 */
   --sidebar-ring: 210 82% 38%;
 
   --chart-1: 210 82% 50%;

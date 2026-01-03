@@ -35,7 +35,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <main
         className={cn(
           "min-h-screen transition-[padding] duration-300 ease-in-out pb-20 md:pb-8",
-          collapsed ? "md:pl-[60px]" : "md:pl-[280px]"
+          collapsed ? "md:pl-[60px]" : "md:pl-[320px]"
         )}
       >
         <div className="container mx-auto max-w-7xl pt-6 px-3 md:px-6 pb-4">

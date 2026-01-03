@@ -71,7 +71,10 @@ export function NotificationDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md p-0 bg-zinc-900 border-zinc-800 rounded-2xl overflow-hidden text-foreground">
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-md p-0 bg-zinc-900 border-zinc-800 rounded-2xl overflow-hidden text-foreground"
+      >
         <VisuallyHidden>
           <DialogTitle>Notifications</DialogTitle>
         </VisuallyHidden>
