@@ -83,10 +83,11 @@ export default function TaskDetailPage({
   }
 
   const priorityColors: Record<string, string> = {
-    LOW: "info",
-    MEDIUM: "warning",
-    HIGH: "bg-orange-500 text-white",
-    URGENT: "destructive",
+    LOW: "bg-blue-500 text-white hover:bg-blue-600",
+    MEDIUM: "bg-yellow-500 text-white hover:bg-yellow-600",
+    HIGH: "bg-orange-500 text-white hover:bg-orange-600",
+    URGENT:
+      "bg-destructive text-destructive-foreground hover:bg-destructive/90",
   };
 
   const statusVariants: Record<string, "default" | "warning" | "success"> = {
